@@ -6,6 +6,7 @@ using RPG.Core;
 using RPG.Saving;
 using RPG.Resources;
 using RPG.Stats;
+using GameDevTV.Utils;
 
 namespace RPG.Combat
 {
@@ -15,13 +16,14 @@ namespace RPG.Combat
         [SerializeField] float timeBetweenAttack = 1f;
         [SerializeField] Transform handTransformL = null;
         [SerializeField] Transform handTransformR = null;
-        [SerializeField] Weapon defaultWeapon = null;
+        [SerializeField] WeaponConfig defaultWeapon = null;
         [SerializeField] string defaultWeaponName = "Unarmed";
         [SerializeField] int hitDieNumber = 1;
         [SerializeField] DieType hitDieType;
 
         Die hitDie;
-        Weapon currentWeapon = null;
+        WeaponConfig currentWeaponConfig = null;
+        LazyValue<Weapon> currentWeapon = null;
         string currentWeaponName = null;
 
         Mover mover;
@@ -34,9 +36,21 @@ namespace RPG.Combat
             mover = GetComponent<Mover>();
             animator = GetComponent<Animator>();
 
-            Weapon weapon = UnityEngine.Resources.Load<Weapon>(defaultWeaponName);
-            if (currentWeapon == null)
+            currentWeapon = new LazyValue<Weapon>(SetUpDefaultWeapon);
+
+            WeaponConfig weapon = UnityEngine.Resources.Load<WeaponConfig>(defaultWeaponName);
+            if (currentWeaponConfig == null)
                 EquipWeapon(weapon);
+        }
+
+        void Start()
+        {
+            currentWeapon.ForceInit();
+        }
+
+        Weapon SetUpDefaultWeapon()
+        {
+            return EquipWeapon(currentWeaponConfig);
         }
 
         void Update()
@@ -44,7 +58,7 @@ namespace RPG.Combat
             timeSinceLastAttack += Time.deltaTime;
             if (combatTarget == null) return;
 
-            bool inRange = Vector3.Distance(transform.position, combatTarget.transform.position) < currentWeapon.GetRange();
+            bool inRange = Vector3.Distance(transform.position, combatTarget.transform.position) < currentWeaponConfig.GetRange();
             
             if (!inRange)
             {
@@ -62,14 +76,14 @@ namespace RPG.Combat
             return hitDie;
         }
 
-        public void EquipWeapon(Weapon weapon)
+        public Weapon EquipWeapon(WeaponConfig weapon)
         {
-            currentWeapon = weapon;
+            currentWeaponConfig = weapon;
 
             currentWeaponName = weapon.name;
 
-            currentWeapon.Spawn(handTransformL, handTransformR, animator);
-
+            currentWeapon.value = currentWeaponConfig.Spawn(handTransformL, handTransformR, animator);
+            return currentWeapon.value;
         }
 
         public Health GetTarget()
@@ -89,6 +103,8 @@ namespace RPG.Combat
                 animator.ResetTrigger("stopAttack");
                 animator.SetTrigger("attack");
                 timeSinceLastAttack = 0f;
+                if (currentWeapon.value != null)
+                    currentWeapon.value.OnHit();
             }
         }
 
@@ -116,7 +132,7 @@ namespace RPG.Combat
         {
             if (stats == Stats.Stats.Damage)
             {
-                yield return currentWeapon.GetDamage();
+                yield return currentWeaponConfig.GetDamage();
             }
         }
 
@@ -124,20 +140,20 @@ namespace RPG.Combat
         {
             if (stats == Stats.Stats.Damage)
             {
-                yield return currentWeapon.GetDamage();
+                yield return currentWeaponConfig.GetDamage();
             }
         }
 
         void Hit()
         {
             if (combatTarget == null) return;
-            if (currentWeapon.IsSpell())
+            if (currentWeaponConfig.IsSpell())
             {
                 Shoot();
                 return;
             }
             float hit = hitDie.Roll();
-            float damage = currentWeapon.GetDamage() + GetComponent<Stats.BaseStats>().GetDamageBonus();
+            float damage = currentWeaponConfig.GetDamage() + GetComponent<Stats.BaseStats>().GetDamageBonus();
 
             combatTarget.TakeDamage(gameObject, damage * (hit == 20 ? damage : 1));
 
@@ -151,7 +167,7 @@ namespace RPG.Combat
         {
             if (combatTarget == null) return;
 
-            currentWeapon.LaunchProjectile(gameObject, handTransformR, handTransformL, combatTarget);
+            currentWeaponConfig.LaunchProjectile(gameObject, handTransformR, handTransformL, combatTarget);
 
             if (combatTarget.IsDead)
             {
@@ -166,7 +182,8 @@ namespace RPG.Combat
 
         public void RestoreState(object state)
         {
-            Weapon weapon = UnityEngine.Resources.Load<Weapon>((string)state);
+            WeaponConfig weapon = UnityEngine.Resources.Load<WeaponConfig>((string)state);
+            if (weapon == null) return;
             currentWeaponName = weapon.name;
             EquipWeapon(weapon);
         }

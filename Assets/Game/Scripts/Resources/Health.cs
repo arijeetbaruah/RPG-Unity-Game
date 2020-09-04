@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using RPG.Saving;
 using RPG.Stats;
 using GameDevTV.Utils;
@@ -15,6 +16,9 @@ namespace RPG.Resources
         bool isDead = false;
         
         public bool IsDead { get => isDead; }
+
+        [SerializeField] UnityEvent onDie;
+        [SerializeField] UnityEvent onTakingDamage;
 
         private void Awake()
         {
@@ -60,7 +64,12 @@ namespace RPG.Resources
                 GetComponent<Animator>().SetTrigger("death");
                 GetComponent<RPG.Core.ActionScheduler>().CancelCurrentAction();
                 isDead = true;
+                onDie.Invoke();
                 RewardExperience(instigator);
+            }
+            else
+            {
+                onTakingDamage.Invoke();
             }
         }
 

@@ -1,6 +1,7 @@
 ﻿using RPG.Core;
 using RPG.Resources;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace RPG.Combat
 {
@@ -11,6 +12,8 @@ namespace RPG.Combat
         [SerializeField] bool homing = false;
         [SerializeField] GameObject hitEffect = null;
         [SerializeField] float maxLifetime = 100;
+        [SerializeField] UnityEvent onHit;
+        [SerializeField] UnityEvent onLaunch;
 
         float projectileDamage = 10f;
         GameObject instigator;
@@ -59,12 +62,15 @@ namespace RPG.Combat
             }
 
             float damage = projectileDamage + die.Roll();
+            onHit.Invoke();
 
             target.TakeDamage(instigator, damage * (hit == 20 ? damage : 1));
 
             if (hitEffect)
                 Instantiate(hitEffect, transform.position, transform.rotation);
-            Destroy(gameObject);
+            speed = 0;
+
+            Destroy(gameObject, 5);
         }
     }
 }

@@ -4824,6 +4824,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 036ef09afd3415f45a7e7ca47d787829, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  targetToDestroy: {fileID: 0}
 --- !u!1001 &238222286178469658
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4918,6 +4919,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 4356106060491909110, guid: 74258aa4e1f3e00459bfc3c3e7f446e6,
         type: 3}
+    - target: {fileID: 1474692023394663052, guid: c1323f457891d8d44bebee1f37dcde75,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 3161985622505303027, guid: c1323f457891d8d44bebee1f37dcde75,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -4973,6 +4979,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5612076438262288165, guid: c1323f457891d8d44bebee1f37dcde75,
+        type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: be04e3f4e348d08438b4ce2e92a586d2, type: 3}
     - target: {fileID: 7211667118898799585, guid: c1323f457891d8d44bebee1f37dcde75,
         type: 3}
       propertyPath: m_Name
