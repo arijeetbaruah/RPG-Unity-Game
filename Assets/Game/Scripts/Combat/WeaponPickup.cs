@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace RPG.Combat
 {
@@ -16,7 +17,7 @@ namespace RPG.Combat
 
         public bool HandleRaycast(PlayerController controller)
         {
-            if (Input.GetMouseButtonDown(0))
+            if (Mouse.current.leftButton.isPressed)
             {
                 PickUp(controller.GetComponent<Figther>());
             }

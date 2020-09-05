@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace RPG.Core
 {
-    public class Die : MonoBehaviour
+    public class Die
     {
         [SerializeField] DieType dieType;
         [SerializeField] int count = 1;

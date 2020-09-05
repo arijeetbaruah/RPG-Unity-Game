@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using RPG.Saving;
+using UnityEngine.InputSystem;
 
 namespace RPG.SceneManagement
 {
@@ -28,15 +29,15 @@ namespace RPG.SceneManagement
 
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.L))
+            if (Keyboard.current.lKey.isPressed)
             {
                 Load();
             }
-            if (Input.GetKeyDown(KeyCode.S))
+            if (Keyboard.current.sKey.isPressed)
             {
                 Save();
             }
-            if (Input.GetKeyDown(KeyCode.Delete))
+            if (Keyboard.current.deleteKey.isPressed)
             {
                 Delete();
             }
