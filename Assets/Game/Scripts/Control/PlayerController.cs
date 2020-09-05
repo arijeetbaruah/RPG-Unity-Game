@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using UnityEngine.AI;
+using RPG.Input;
+using UnityEngine.InputSystem;
 
 namespace RPG.Control
 {
@@ -46,7 +48,7 @@ namespace RPG.Control
 
             if (hasHit)
             {
-                if (Input.GetMouseButton(0))
+                if (Mouse.current.leftButton.isPressed)
                 {
                     mover.StartMoveAction(target, 1);
                 }
@@ -57,14 +59,17 @@ namespace RPG.Control
             return false;
         }
 
-        private static Ray GetMouseRay()
+        private Ray GetMouseRay()
         {
-            return Camera.main.ScreenPointToRay(Input.mousePosition);
+            Vector2 mousePos = GetComponent<InputManager>().mousePosition;
+            return Camera.main.ScreenPointToRay(new Vector3(mousePos.x, mousePos.y, 0));
         }
 
         private void InteractionSystem()
         {
-            if (InteractWithUI()) { SetCursor(CursorType.UI); return; };
+            if (InteractWithUI()) { 
+                SetCursor(CursorType.UI); return; 
+            };
             if (!GetComponent<Health>().IsDead)
             {
                 if (InteractWithComponent()) return;
@@ -159,7 +164,7 @@ namespace RPG.Control
             return false;
         }
 
-        private static RaycastHit[] GetRaycastHitSorted()
+        private RaycastHit[] GetRaycastHitSorted()
         {
             RaycastHit[] hits = Physics.RaycastAll(GetMouseRay());
 

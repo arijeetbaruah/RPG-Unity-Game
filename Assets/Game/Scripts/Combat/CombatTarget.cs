@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace RPG.Combat
 {
@@ -17,7 +18,7 @@ namespace RPG.Combat
             Figther figther = controller.GetComponent<Figther>();
             if (!figther.CanAttack(gameObject)) return false;
 
-            if (Input.GetMouseButton(0))
+            if (Mouse.current.leftButton.isPressed)
             {
                 figther.Attack(gameObject);
             }
