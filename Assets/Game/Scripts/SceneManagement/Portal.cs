@@ -13,11 +13,11 @@ namespace RPG.SceneManagement
         };
 
         [SerializeField] int sceneToLoad = -1;
-        [SerializeField] DestinationIdentifier destination;
+        [SerializeField] DestinationIdentifier destination = DestinationIdentifier.A;
         [SerializeField] float fadeOutTime = 3f;
         [SerializeField] float fadeInTime = 2f;
         [SerializeField] float fadeWaitTime = 0.5f;
-        public Transform spawnPoint;
+        public Transform spawnPoint = null;
 
         private void OnTriggerEnter(Collider other)
         {

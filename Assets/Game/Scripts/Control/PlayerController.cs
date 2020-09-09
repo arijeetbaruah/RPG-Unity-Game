@@ -8,6 +8,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.AI;
 using RPG.Input;
 using UnityEngine.InputSystem;
+using UnityEngine.Events;
 
 namespace RPG.Control
 {
@@ -19,6 +20,8 @@ namespace RPG.Control
 
         [SerializeField] float maxNavMeshProjectionDistance = 1f;
         [SerializeField] float maxNavMeshPathDistance = 40f;
+
+        [SerializeField] UnityEvent OnInventoryTrigger;
 
         [Serializable]
         struct CursorMapping
@@ -192,6 +195,11 @@ namespace RPG.Control
             }            
 
             return mappings[type];
+        }
+
+        void OnInventory()
+        {
+            OnInventoryTrigger.Invoke();
         }
 
         public void SetCursor(CursorType type)

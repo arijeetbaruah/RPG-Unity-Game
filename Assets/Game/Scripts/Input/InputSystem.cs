@@ -27,6 +27,14 @@ namespace RPG.Input
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Inventory"",
+                    ""type"": ""Button"",
+                    ""id"": ""c996a23d-5a00-4dbb-909c-98d48bab01c3"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -38,6 +46,17 @@ namespace RPG.Input
                     ""processors"": """",
                     ""groups"": ""PC"",
                     ""action"": ""Look"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4c778d89-8d90-42ec-bef6-93791a8ef8ce"",
+                    ""path"": ""<Keyboard>/i"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PC"",
+                    ""action"": ""Inventory"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -53,6 +72,11 @@ namespace RPG.Input
                     ""devicePath"": ""<Mouse>"",
                     ""isOptional"": false,
                     ""isOR"": false
+                },
+                {
+                    ""devicePath"": ""<Keyboard>"",
+                    ""isOptional"": false,
+                    ""isOR"": false
                 }
             ]
         }
@@ -61,6 +85,7 @@ namespace RPG.Input
             // Player
             m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
             m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
+            m_Player_Inventory = m_Player.FindAction("Inventory", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -111,11 +136,13 @@ namespace RPG.Input
         private readonly InputActionMap m_Player;
         private IPlayerActions m_PlayerActionsCallbackInterface;
         private readonly InputAction m_Player_Look;
+        private readonly InputAction m_Player_Inventory;
         public struct PlayerActions
         {
             private @InputSystem m_Wrapper;
             public PlayerActions(@InputSystem wrapper) { m_Wrapper = wrapper; }
             public InputAction @Look => m_Wrapper.m_Player_Look;
+            public InputAction @Inventory => m_Wrapper.m_Player_Inventory;
             public InputActionMap Get() { return m_Wrapper.m_Player; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -128,6 +155,9 @@ namespace RPG.Input
                     @Look.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLook;
                     @Look.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLook;
                     @Look.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLook;
+                    @Inventory.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInventory;
+                    @Inventory.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInventory;
+                    @Inventory.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInventory;
                 }
                 m_Wrapper.m_PlayerActionsCallbackInterface = instance;
                 if (instance != null)
@@ -135,6 +165,9 @@ namespace RPG.Input
                     @Look.started += instance.OnLook;
                     @Look.performed += instance.OnLook;
                     @Look.canceled += instance.OnLook;
+                    @Inventory.started += instance.OnInventory;
+                    @Inventory.performed += instance.OnInventory;
+                    @Inventory.canceled += instance.OnInventory;
                 }
             }
         }
@@ -151,6 +184,7 @@ namespace RPG.Input
         public interface IPlayerActions
         {
             void OnLook(InputAction.CallbackContext context);
+            void OnInventory(InputAction.CallbackContext context);
         }
     }
 }

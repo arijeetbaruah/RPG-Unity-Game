@@ -8,7 +8,7 @@ namespace RPG.Combat
 {
     public class WeaponPickup : MonoBehaviour, IRaycastable
     {
-        [SerializeField] WeaponConfig weapon;
+        [SerializeField] WeaponConfig weapon = null;
 
         public CursorType GetCursorType()
         {

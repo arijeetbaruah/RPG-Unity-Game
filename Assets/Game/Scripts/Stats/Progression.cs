@@ -74,7 +74,7 @@ namespace RPG.Stats
         class ProgressionCharacterClass
         {
             public CharacterClass characterClass;
-            public ProgressionStat[] stats;
+            public ProgressionStat[] stats = null;
         }
 
         [System.Serializable]
